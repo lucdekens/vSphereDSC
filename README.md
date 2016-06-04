@@ -2,3 +2,6 @@
 
 # vSphereDSC
 DSC Resource module for vSphere environments
+
+# Documentation
+[Intro](http://www.lucd.info/2016/06/04/vspheredsc-intro/)

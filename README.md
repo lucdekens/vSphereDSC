@@ -1,4 +1,4 @@
-![Logo](http://lucd.info/wp-content/uploads/2016/06/vSphereDSC-Logo-small.jpg)
+![Logo](https://github.com/lucdekens/vSphereDSC/blob/master/Tools/vSphereDSC-Logo-small.jpg)
 
 # vSphereDSC
 DSC Resource module for vSphere environments

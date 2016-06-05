@@ -98,7 +98,7 @@ PrivateData = @{
         LicenseUri = 'https://www.tldrlegal.com/l/mit'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://ldekens@bitbucket.org/vspheredsc/vspheredsc.git'
+        ProjectUri = 'https://github.com/lucdekens/vSphereDSC'
 
         # A URL to an icon representing this module.
         # IconUri = ''

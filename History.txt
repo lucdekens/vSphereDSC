@@ -1,0 +1,7 @@
+DSC Resource vSphere-DSC
+Author: Luc Dekens
+
+v1.0.1 - 5 June 2016
+- Basic functionality
+- vmwFolder
+ 

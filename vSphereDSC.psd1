@@ -101,7 +101,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/lucdekens/vSphereDSC'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'http://lucd.info/wp-content/uploads/2016/06/vSphereDSC-Logo.png'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''

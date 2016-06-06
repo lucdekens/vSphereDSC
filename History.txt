@@ -3,5 +3,6 @@ Author: Luc Dekens
 
 v1.0.1 - 5 June 2016
 - Basic functionality
-- vmwFolder
- 
+- VmwFolder
+v1.0.2 - 6 June 2016
+- VmwDatacenter

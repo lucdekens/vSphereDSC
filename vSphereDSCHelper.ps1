@@ -384,3 +384,47 @@ function Test-VmwFolderType
 
     return $foundType
 }
+
+function Test-VmwDatacenterIsNested
+{
+    [CmdletBinding()]
+    param(
+        [VMware.Vim.ManagedEntity]$Node
+    )
+
+    $isNested = $false
+    $parent = $Node.Parent
+    while($parent){
+        $parentObj = Get-View -Id $parent -Property Name,Parent
+        if($parentObj -is [VMware.Vim.Datacenter]){
+            $isNedsted = $true
+        }
+        $parent = $parentObj.Parent
+    }
+}
+
+function New-VmwDatacenter
+{
+    [CmdletBinding()]
+    param(
+        [VMware.Vim.ManagedEntity]$Parent,
+        [String]$DatacenterName
+    )
+
+    Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
+    Write-Verbose -Message "$(Get-Date) Create a datacenter, named $($DatacenterName), in $($Parent.Name) " 
+
+    $si = Get-View -Id ServiceInstance
+    $rootFolder = Get-View -Id $si.Content.RootFolder
+
+    if($parent -is [VMware.Vim.Folder] -and
+       (($parent.MoRef -eq $si.Content.RootFolder) -or 
+       (Test-VmwFolderType -Node $Parent -FolderType ([VmwFolderType]::Yellow))) -and
+       !(Test-VmwDatacenterIsNested -Node $Parent)){
+       
+       Write-Verbose -Message "$(Get-Date) Creating datacenter $($DatacenterName) at $($Parent.Name)" 
+       $Parent.CreateDatacenter($DatacenterName) | Out-Null
+    }
+
+    Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Leaving {0}" -f $s[0].FunctionName)" 
+}

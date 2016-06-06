@@ -12,7 +12,7 @@
 RootModule = 'vSphereDSC.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.1.1'
+ModuleVersion = '1.0.2.1'
 
 # ID used to uniquely identify this module
 GUID = 'd87b6489-19d9-4eae-a328-af93806825c3'
@@ -78,7 +78,7 @@ VariablesToExport = @()
 AliasesToExport = @()
 
 # DSC resources to export from this module
-DscResourcesToExport = @('VmwFolder')
+DscResourcesToExport = @('VmwFolder','VmwDatacenter')
 
 # List of all modules packaged with this module
 # ModuleList = @()
@@ -92,7 +92,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'VMware','vSphere','DSC','Community','VmwFolder','VmwDatacenter','VmwVMHost','VmwCluster','LucD'
+        Tags = 'VMware','vSphere','DSC','Community','VmwFolder','VmwDatacenter','LucD'
 
         # A URL to the license for this module.
         LicenseUri = 'https://www.tldrlegal.com/l/mit'

@@ -158,4 +158,152 @@ class VmwFolder
 #endregion
 }
 
+[DscResource()]
+class VmwDatacenter
+{
+#region Properties
+    [DscProperty(Key)]
+    [string]$Name
+    [DscProperty(Key)]
+    [string]$Path
+    [DscProperty()]
+    [Ensure]$Ensure
+    [DscProperty(Mandatory)]
+    [string]$vServer
+    [DscProperty(Mandatory)]
+    [PSCredential]$vCredential
+    hidden[string]$vSessionId
+#endregion
 
+#region DSC Functions
+    [void]Set()
+    {
+        Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
+        Write-Verbose -Message "$(Get-Date) $('{0}-{1}-{2}' -f $this.vServer,$this.Name,$this.Path)"
+
+        if(!($global:DefaultVIServer.SessionId -eq $this.vSessionId) -or !$global:DefaultVIServer.IsConnected)
+        {
+            $this.vSessionId = Connect-VmwVIServer -Server $this.vServer -Credential $this.vCredential
+        }
+
+        $dcPresent = $this.TestVmwDatacenter()
+
+        if ($this.Ensure -eq [Ensure]::Present)
+        {
+            if(-not $dcPresent)
+            {
+                Write-Verbose -Message "$(Get-Date) Creating the datacenter $($this.Path)/$($this.Name)"
+                $this.NewVmwDatacenter()
+            }
+        }
+        else
+        {
+            if ($dcPresent)
+            {
+                Write-Verbose -Message "$(Get-Date) Deleting the datacenter $($this.Path)/$($this.Name)"
+                $this.RemoveVmwDatacenter()
+            }
+        }
+    }
+    
+    [bool]Test()
+    {
+        Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
+        Write-Verbose -Message "$(Get-Date) $('{0}-{1}-{2}' -f $this.vServer,$this.Name,$this.Path)"
+
+        if(!($global:DefaultVIServer.SessionId -eq $this.vSessionId) -or !$global:DefaultVIServer.IsConnected)
+        {
+            $this.vSessionId = Connect-VmwVIServer -Server $this.vServer -Credential $this.vCredential
+        }
+
+        $dcPresent = $this.TestVmwDatacenter()
+
+        if ($this.Ensure -eq [Ensure]::Present)
+        {
+            return $dcPresent
+        }
+        else
+        {
+            return -not $dcPresent
+        }
+    }
+    
+    [VmwDatacenter]Get()
+    {
+        return $this.GetVmwDatacenter()
+    }
+#endregion
+
+#region VmwDatacenter Helper Functions
+    [bool]TestVmwDatacenter()
+    {
+        Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
+
+        if($this.GetVmwDatacenter()){
+            return $true
+        }    
+        else{
+            return $false
+        }
+    }
+
+    [string]GetVmwDatacenter()
+    {
+        Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
+
+        $obj = $null
+        $sView = @{
+              ViewType = 'Datacenter'
+              Property = 'Name','Parent'
+              Filter = @{
+                  Name = $this.Name
+              }
+        }
+        $dc = Get-View @sView
+        if($dc){
+                $obj = $dc.MoRef.ToString()
+        }
+        return $obj
+    }
+
+    [void]NewVmwDatacenter()
+    {
+        Write-Verbose -Message "$(Get-Date)  $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)"
+
+        $node = Find-VmwLeaf -Path $this.Path
+       
+        if($node){
+            # Take action on node
+            $node = Get-View -Id $node -Property Name,ChildEntity
+            if(!$node.ChildEntity -or (Get-View -Id $node.ChildEntity -Property Name).Name -notcontains $this.Name){
+                $node.CreateDatacenter($this.Name) | Out-Null
+            }
+        }
+    
+    }
+
+    [void]RemoveVmwDatacenter()
+    {
+        Write-Verbose -Message "$(Get-Date)  $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)"
+
+        $node = Find-VmwLeaf -Path $this.Path
+       
+        if($node){
+            $node = Get-View -Id $node -Property Name
+            $sView = @{
+                ViewType = 'Datacenter'
+                SearchRoot = $node.MoRef
+                Filter = @{
+                    Name = $this.Name
+                }
+                ErrorAction = 'SilentlyContinue'
+            }
+            $dc = Get-View @sView
+            if($dc){
+                $dc.Destroy()
+             }
+
+        }    
+    }
+#endregion
+}

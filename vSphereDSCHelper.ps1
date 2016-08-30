@@ -1163,3 +1163,18 @@ function Set-VmwVSSConfig
         Set-VmwVSSConfigOnVMHost -Esx $Parent
     }
 }
+
+function Get-VmwAlarmFromPath
+{
+}
+
+function Test-VmwAlarm
+{
+}
+
+function New-VmwAlarm
+{
+    param (
+        
+    )
+}

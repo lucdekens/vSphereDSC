@@ -1261,12 +1261,8 @@ class VmwAlarm
         Write-Verbose -Message "$(Get-Date)  $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)"
         Write-Verbose -Message "$(Get-Date) Looking for parent $($this.Path)" 
 
-        $parent = Get-VmwAlarmFromPath -Path "$($this.Path)"
-
-        # Take action on node
-        if($parent.Found){
-            New-VmwAlarm -Parent $parent.Node -AlarmName $this.Name
-        }
+        # This should accept an Entity/Description/Enabled. Hardcoded to test
+        New-VmwAlarm -Entity (Get-VMHost) -AlarmName $this.Name -Description 'test' -Enabled $true
 
         Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Leaving {0}" -f $s[0].FunctionName)" 
     }

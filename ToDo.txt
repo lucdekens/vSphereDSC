@@ -1,0 +1,3 @@
+Finalise directory structure
+Incorporate Pester tests
+Create AppVeyor project

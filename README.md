@@ -1,13 +1,41 @@
-![Logo](https://github.com/lucdekens/vSphereDSC/blob/master/Tools/vSphereDSC-Logo-small.jpg)
-
 # vSphereDSC
-DSC Resource module for vSphere environments
 
-## Documentation
-[Intro](http://www.lucd.info/2016/06/04/vspheredsc-intro/)
+The vSphereDSC DSC resources allow you confgure and manage a vSphere environment.
 
-[Principles of Operation](http://www.lucd.info/2016/06/07/vspheredsc-principles-operation/)
+## Description
 
-[VmwFolder](http://www.lucd.info/2016/06/05/vspheredsc-vmwfolder)
+## Resources
 
-[VmwDatacenter](http://www.lucd.info/2016/06/06/vspheredsc-vmwdatacenter)
+* **VmwDatacenter** creates a Datacenter
+* **VmwFolder** creates a Folder in the vSphere inventory
+* **VmwVMhost** connects an ESXi node to the vCenter
+* **VmwCluster** creates a cluster
+
+### **VmwDatacenter**
+
+### **VmwFolder**
+
+### **VmwVMhost**
+
+### **VmwCluster**
+
+## Versions
+
+### 1.6
+* Initial version of the new repository layout
+
+## Examples
+
+### Create a Datacenter
+
+### Create a 'yellow' Folder
+
+### Create a 'blue' Folder
+
+### Create a datastore Folder
+
+### Create a network folder
+
+### Connect an ESXi node
+
+### Create a Cluster

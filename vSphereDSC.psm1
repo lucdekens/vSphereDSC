@@ -19,6 +19,13 @@ enum VmwAlarmExpression {
     State
 }
 
+enum VmwAlarmTrigger {
+    GreenYellow
+    YellowRed
+    RedYellow
+    YellowGreen
+}
+
 $PSDefaultParameterValues = @{
     "Get-View:Verbose"=$false
     "Add-PSSnapin:Verbose"=$false
@@ -333,6 +340,8 @@ class VmwAlarm
     [Active]$Active
     [DscProperty(Key)]
     [VmwAlarmExpression]$Type
+    [DscProperty()]
+    [VmwAlarmTrigger]$Trigger
     [DscProperty(Mandatory)]
     [string]$vServer
     [DscProperty(Mandatory)]

@@ -3,6 +3,12 @@
     Blue
 }
 
+enum VmwAlarmColor {
+    Green
+    Yellow
+    Red
+}
+
 function Enable-PowerCLI
 {
 <#
@@ -427,4 +433,19 @@ function New-VmwDatacenter
     }
 
     Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Leaving {0}" -f $s[0].FunctionName)" 
+}
+
+function Get-VmwAlarmFromPath
+{
+}
+
+function Test-VmwAlarm
+{
+}
+
+function New-VmwAlarm
+{
+    param (
+        
+    )
 }

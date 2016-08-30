@@ -1164,17 +1164,91 @@ function Set-VmwVSSConfig
     }
 }
 
-function Get-VmwAlarmFromPath
+function New-VmwAlarm
 {
+    [CmdletBinding()]
+    param (
+        [VMware.Vim.ManagedEntity]$Entity,
+        [string]$AlarmName,
+        [string]$Description,
+        [switch]$Enabled
+    )
+
+    Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;">>Entering {0}" -f $s[0].FunctionName)" 
+    Write-Verbose -Message "$(Get-Date) Create an alarm, named $($AlarmName), in $($Entity.Name) " 
+
+    $alarmMgr = Get-View AlarmManager
+ 
+    # AlarmSpec
+    $alarm = New-Object VMware.Vim.AlarmSpec
+    $alarm.Name = $AlarmName
+    $alarm.Description = $Description
+    $alarm.Enabled = $Enabled
+ 
+    #Action
+    $alarm.action = New-Object VMware.Vim.GroupAlarmAction
+ 
+    $trigger = New-Object VMware.Vim.AlarmTriggeringAction
+    $trigger.action = New-Object VMware.Vim.SendSNMPAction
+ 
+    # Transaction
+    $trans = New-Object VMware.Vim.AlarmTriggeringActionTransitionSpec
+    $trans.startstate = "yellow"
+    $trans.finalstate = "red"
+    $trans.repeats = $false
+ 
+    $trigger.transitionspecs += $trans
+ 
+    $alarm.action.action += $trigger
+ 
+    # Expression
+    $expression = New-Object VMware.Vim.EventAlarmExpression
+    $expression.EventType = "EnteringMaintenanceModeEvent"
+    $expression.ObjectType = "HostSystem"
+    $expression.Status = "red"
+ 
+    $alarm.expression = New-Object VMware.Vim.OrAlarmExpression
+    $alarm.expression.expression += $expression
+ 
+    $alarm.setting = New-Object VMware.Vim.AlarmSetting
+    $alarm.setting.reportingFrequency = 0
+    $alarm.setting.toleranceRange = 0
+ 
+    # Create alarm.
+    $alarmMgr.CreateAlarm($entity.MoRef, $alarm)
+
+    Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"<<Leaving {0}" -f $s[0].FunctionName)" 
+}
+
+function Remove-VmwAlarm
+{
+    [CmdletBinding()]
+    param (
+        [string]$AlarmName
+    )
+
+    $AlarmMgr = Get-View AlarmManager
+    $Alarm = Get-View ($AlarmMgr.GetAlarm($Null)) | Where {$_.Info.Name -eq $AlarmName}
+    $Alarm.RemoveAlarm()
 }
 
 function Test-VmwAlarm
 {
+    [CmdletBinding()]
+    param (
+        [string]$AlarmName
+    )
+
+    $AlarmMgr = Get-View AlarmManager
+    $Alarm = Get-View ($AlarmMgr.GetAlarm($Null)) | Where {$_.Info.Name -eq $AlarmName}
+
+    If ($Alarm) {
+        return $true
+    } Else {
+        return $false
+    }
 }
 
-function New-VmwAlarm
+function Get-VmwAlarmFromPath
 {
-    param (
-        
-    )
 }

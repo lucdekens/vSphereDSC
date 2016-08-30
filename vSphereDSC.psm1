@@ -1191,7 +1191,7 @@ class VmwAlarm
 
         $this.vSessionId = Connect-VmwVIServer -Server $this.vServer -Credential $this.vCredential -Id $this.vSessionId
 
-        $alarmPresent = $this.TestAlarm()
+        $alarmPresent = $this.TestVmwAlarm()
 
         if ($this.Ensure -eq [Ensure]::Present)
         {
@@ -1246,24 +1246,12 @@ class VmwAlarm
 #endregion
 
 #region VmwAlarm Helper Functions
-    [bool]TestAlarm()
+    [bool]TestVmwAlarm()
     {
         Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)"
-        Write-Verbose -Message "$(Get-Date) Looking for a $($this.Type) alarm, named $($this.Name) at $($this.Path)" 
+        Write-Verbose -Message "$(Get-Date) Looking for an alarm named $($this.Name)" 
 
-        if($this.Path -match "/$"){
-            $nodePath = "$($this.Path)$($this.Name)"
-        }
-        else{
-            $nodePath = "$($this.Path)/$($this.Name)"
-        }
-        Write-Verbose -Message "$(Get-Date) Looking for $($nodePath)"
-        
-        $nodeFound = Get-VmwAlarmFromPath -Path $nodePath | 
-            where {$_.Found -and (Test-VmwAlarm -Node $_.Node)}
-
-        Write-Verbose -Message "$(Get-Date) Find it ? $($nodeFound -ne $null)" 
-        return ($nodeFound -ne $null)
+        return (Test-VmwAlarm -AlarmName $this.Name)
 
         Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Leaving {0}" -f $s[0].FunctionName)" 
     }
@@ -1287,19 +1275,10 @@ class VmwAlarm
     {
         Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Entering {0}" -f $s[0].FunctionName)" 
 
-        if($this.Path -match "/$"){
-            $nodePath = "$($this.Path)$($this.Name)"
-        }
-        else{
-            $nodePath = "$($this.Path)/$($this.Name)"
+        If (Test-VmwAlarm -AlarmName $this.Name) {
+            Remove-VmwAlarm -AlarmName $this.Name
         }
 
-        $alarm = Get-VmwAlarmFromPath -Path $nodePath
-
-        # Take action on alarm
-        if($alarm.Found){
-            $alarm.Node.Destroy() | Out-Null
-        }
         Write-Verbose -Message "$(Get-Date) $($s = Get-PSCallStack;"Leaving {0}" -f $s[0].FunctionName)" 
     }
 #endregion
